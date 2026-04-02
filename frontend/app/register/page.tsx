@@ -1,6 +1,7 @@
 "use client"
 
 import axios from "axios"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "react-toastify"
 
@@ -26,6 +27,7 @@ const Register = () => {
     name: ""
   })
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   const [errors, setErrors] = useState<IErrors>({})
 
@@ -93,9 +95,10 @@ const Register = () => {
       console.log(process.env.NEXT_PUBLIC_AUTH_SERVICE)
       const { data } = await axios.post(`${process.env.NEXT_PUBLIC_AUTH_SERVICE}/register`, form)
       toast.success(data.message)
+      router.push('/login')
 
     } catch (err: any) {
-      toast.error(err?.response?.data?.error || "Something went wrong")
+      toast.error(err?.response?.data?.message || "something went wrong")
     } finally {
       setLoading(false)
     }
@@ -174,7 +177,9 @@ const Register = () => {
           type="submit"
           className="w-full bg-black text-white py-2 rounded-lg text-sm hover:opacity-90 transition"
         >
-          Create Account
+          {
+            loading ? "Creating ......" : "Create Account"
+          }
         </button>
 
       </form>

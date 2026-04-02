@@ -99,6 +99,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       {/* user info */}
+      user &&
       <div className="mb-6 text-center">
         <h1 className="text-2xl font-bold">Welcome, {user?.name}</h1>
         <p className="text-gray-600">{user?.email}</p>

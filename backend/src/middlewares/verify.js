@@ -6,11 +6,9 @@ export const isValidUser = async (req, res, next) => {
   try {
 
     let token = req.headers.authorization
-    if (!token) {
-      throw new ErrorHandler(404, "Invalid auth")
-
-    }
+    console.log(token)
     token = token.split(' ')[1].trim();
+    if (!token) throw new ErrorHandler("Invalid auth")
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     req.user = decoded
     next()

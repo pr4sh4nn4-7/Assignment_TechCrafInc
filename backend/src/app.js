@@ -14,36 +14,43 @@ const app = express()
 const TableCreation = async () => {
   try {
     await sql`
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; 
+      CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+    `;
 
-`
-    await sql` CREATE TABLE IF NOT EXISTS users(
-id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-name VARCHAR(25) NOT NULL,
-email VARCHAR(66) UNIQUE Not NULL ,
-password VARCHAR(222) NOT NULL
+    await sql`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'type_user') THEN
+          CREATE TYPE type_user AS ENUM ('buyer', 'seller', 'admin');
+        END IF;
+      END$$;
+    `;
 
-)
+    await sql`
+      CREATE TABLE IF NOT EXISTS users(
+        id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+        name VARCHAR(25) NOT NULL,
+        email VARCHAR(66) UNIQUE NOT NULL,
+        password VARCHAR(222) NOT NULL,
+        role type_user DEFAULT 'buyer'
+      )
+    `;
 
+    await sql`
+      CREATE TABLE IF NOT EXISTS favourites (
+        id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+        user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+        property_id TEXT NOT NULL
+      )
+    `;
 
-`
-
-    await sql`CREATE TABLE IF NOT EXISTS favourites (
-    id uuid  PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    property_id TEXT NOT NULL
-  )`;
-
-    console.log('users and favourites successfull')
-
-
+    console.log('Users and favourites tables created successfully');
   } catch (err) {
-    console.log(err)
-
+    console.log(err);
   }
-}
+};
 
-TableCreation()
+TableCreation();
 
 
 

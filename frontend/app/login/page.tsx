@@ -2,6 +2,7 @@
 "use client"
 
 import axios from "axios"
+import Link from "next/link"
 import { redirect, useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "react-toastify"
@@ -107,7 +108,7 @@ const Login = () => {
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-2xl shadow-md w-full max-w-sm"
       >
-        <h2 className="text-xl font-semibold mb-4 text-center">Register</h2>
+        <h2 className="text-xl font-semibold mb-4 text-center">Login</h2>
 
         <div className="mb-3">
           {errors.name && (
@@ -154,9 +155,11 @@ const Login = () => {
           }
         </button>
 
-        <p className="text-xs text-center text-gray-500 mt-3">
-          simple form • no bs
-        </p>
+        <Link href={'/register'} className="text-xs text-blue-400">
+          <span className="text-xs text-center text-gray-500 mt-3">
+            Don't have an account?
+          </span>
+          create one</Link>
       </form>
     </div>
   )
